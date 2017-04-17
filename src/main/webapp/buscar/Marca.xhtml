@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/WEB-INF/templates/templateLogado.xhtml">
+        <ui:define name="titulo">Buscar Marca</ui:define>
+        <ui:define name="corpo">
+            <c:if test="#{!controllerUsuario.permissaoAcesso(1)}">
+                #{facesContext.externalContext.redirect("/index.xhtml")}
+            </c:if>
+            <h:form id="form">
+                <p:dataTable value="#{controllerMarca.listarTudo()}" var="mar" >
+                    <f:facet name="header">
+                        Lista de Marcas
+                    </f:facet>
+                    <p:column headerText="Nome" filterBy="#{mar.nome}" filterMatchMode="startsWith">
+                        <h:outputText value="#{mar.nome}"/>
+                    </p:column>
+                    <p:column class="colOpc">
+                        <p:commandButton update=":form:verMar" oncomplete="PF('verMarDialog').show()" icon="ui-icon-search" title="Ver">
+                            <f:setPropertyActionListener value="#{mar}" target="#{controllerMarca.selecionado}" />
+                        </p:commandButton>
+                        <p:commandButton update=":form:altMar" oncomplete="PF('altMarDialog').show()" icon="ui-icon-pencil" title="Alterar">
+                            <f:setPropertyActionListener value="#{mar}" target="#{controllerMarca.selecionado}" />
+                        </p:commandButton>
+                        <p:commandButton update=":form:verMar" oncomplete="PF('verMarDialog').show()" icon="ui-icon-trash" title="Deletar">
+                            <f:setPropertyActionListener value="#{mar}" target="#{controllerMarca.selecionado}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+
+                <p:dialog header="Detalhes" widgetVar="verMarDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="verMar" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty controllerMarca.selecionado}" columnClasses="nome">
+                            <h:outputText value="Nome:"/>
+                            <h:outputText value="#{controllerMarca.selecionado.nome}"/>
+                            <h:outputText value="Nº de modelos:"/>
+                            <c:set var="quant" scope="view" value="${controllerModelo.listarPor(controllerMarca.selecionado).size()}"/>
+                            <h:outputText value="#{quant}"/>
+                            <h:outputText value="Deletar:"/>
+                            <c:choose>
+                                <c:when test="#{controllerMarca.equals(quant,0)}">
+                                    <p:commandButton action="#{controllerMarca.deletarMarca()}" update=":form" oncomplete="PF('verMarDialog').hide()" value="Deletar"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <h:outputText value="Impossivel deletar marca em uso" style="color: red"/>
+                                </c:otherwise>
+
+                            </c:choose>
+
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Alterar" widgetVar="altMarDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" onHide="#{controllerMarca.selecionado = null}">
+                    <p:outputPanel id="altMar" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty controllerMarca.selecionado}" columnClasses="nome">
+                            <h:outputText value="Nome:"/>
+                            <h:inputText value="#{controllerMarca.selecionado.nome}"/>
+                            <p:commandButton action="#{controllerMarca.atualizarMarca()}" update=":form" oncomplete="PF('altMarDialog').hide()" value="Atualizar"/>
+
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:growl showDetail="true"/>
+            </h:form>
+
+
+        </ui:define>
+    </ui:composition>
+
+</html>
+

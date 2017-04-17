@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition template="/WEB-INF/templates/templateLogado.xhtml">
+        <ui:define name="titulo">Cadastrar Equipamento</ui:define>
+        <ui:define name="corpo">
+            <c:if test="#{!controllerUsuario.permissaoAcesso(1)}">
+                #{facesContext.externalContext.redirect("/index.xhtml")}
+            </c:if>
+           <h:form id="form">
+               <p:dataTable value="#{controllerEquipamento.listarTudo()}" var="equi" >
+                    <f:facet name="header">
+                        Lista de Equipamentos
+                    </f:facet>
+                   <p:column headerText="Nº de serie:" filterBy="#{equi.numeroSerie}" filterMatchMode="startsWith">
+                        <h:outputText value="#{equi.numeroSerie}"/>
+                    </p:column>
+                   <p:column headerText="Cliente" filterBy="#{equi.cliente.nome}" filterMatchMode="startsWith" sortBy="#{equi.cliente.nome}">
+                       <h:outputText value="#{equi.cliente.nome}"/>
+                    </p:column>
+                    <p:column class="colOpc">
+                        <p:commandButton update=":form:verEq" oncomplete="PF('verEqDialog').show()" icon="ui-icon-search" title="Ver">
+                            <f:setPropertyActionListener value="#{equi}" target="#{controllerEquipamento.selecionado}" />
+                        </p:commandButton>
+                        <p:commandButton update=":form:altEq" oncomplete="PF('altEqDialog').show()" icon="ui-icon-pencil" title="Alterar">
+                            <f:setPropertyActionListener value="#{equi}" target="#{controllerEquipamento.selecionado}" />
+                        </p:commandButton>
+                        <p:commandButton update=":form:verEq" oncomplete="PF('verEqDialog').show()" icon="ui-icon-trash" title="Deletar">
+                            <f:setPropertyActionListener value="#{equi}" target="#{controllerEquipamento.selecionado}" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+
+               <p:dialog header="Detalhes" widgetVar="verEqDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" onHide="#{controllerEquipamento.selecionado = null}">
+                    <p:outputPanel id="verEq" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty controllerEquipamento.selecionado}" columnClasses="marca">
+                            <h:outputText value="Nº de serie"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.numeroSerie}"/>
+                            <h:outputText value="Marca:"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.modelo.marca.nome}"/>
+                            <h:outputText value="Modelo:"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.modelo.nome}"/>
+                            <h:outputText value="CPF do cliente:"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.cliente.cpf}"/>
+                            <h:outputText value="Nome do cliente:"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.cliente.nome}"/>
+                            
+                            <h:outputText value="Deletar:"/>
+                            <p:commandButton action="#{controllerEquipamento.deletarEquipamento()}" update=":form" oncomplete="PF('verEqDialog').hide()" value="Deletar"/>
+
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Alterar" widgetVar="altEqDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" onHide="#{controllerEquipamento.selecionado = null}">
+                    <p:outputPanel id="altEq" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty controllerEquipamento.selecionado}" columnClasses="marca">
+                            <h:outputText value="Nº de serie"/>
+                            <h:inputText value="#{controllerEquipamento.selecionado.numeroSerie}"/>
+                            <h:outputText value="Marca:"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.modelo.marca.nome}"/>
+                            <h:outputText value="Modelo:"/>
+                            <p:selectOneMenu id="modelo" value="#{controllerEquipamento.selecionado.modelo.id}"  >
+                                <f:selectItems value="#{controllerModelo.listarTudo()}" var="mo" itemValue="#{mo.id}" itemLabel="#{mo.nome}" />
+                            </p:selectOneMenu>
+                            <h:outputText value="CPF do cliente:"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.cliente.cpf}"/>
+                            <h:outputText value="Nome do cliente:"/>
+                            <h:outputText value="#{controllerEquipamento.selecionado.cliente.nome}"/>
+                            <h:outputText value="Deletar:"/>
+                            <p:commandButton action="#{controllerEquipamento.atualizarEquipamento()}" update=":form" oncomplete="PF('altEqDialog').hide()" value="Atualizar"/>
+
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:growl showDetail="true"/>
+            </h:form>
+
+
+        </ui:define>
+    </ui:composition>
+</html>
+

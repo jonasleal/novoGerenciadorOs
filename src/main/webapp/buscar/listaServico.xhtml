@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition template="/WEB-INF/templates/templateLogado.xhtml">
+        <ui:define name="titulo">Cadastrar Pessoa</ui:define>
+        <ui:define name="corpo">
+            <c:if test="#{!controllerUsuario.permissaoAcesso(1)}">
+                #{facesContext.externalContext.redirect("/Gerenciamento_de_Os/index.xhtml")}
+            </c:if>
+            <p:growl id="msgs" showDetail="true"/>
+            <h:form id="form">
+                <p:dataTable value="#{controllerOs.listarServicos()}" var="os">
+                    <p:column headerText="Nº de O.S.">
+                        <p:outputLabel value="#{os.numero}"/>
+                    </p:column>
+                    <p:column headerText="Nº de serie">
+                        <p:outputLabel value="#{os.equipamento.numeroSerie}"/>
+                    </p:column>
+                    <p:column headerText="Cliente">
+                        <p:outputLabel value="#{os.equipamento.cliente.nome}"/>
+                    </p:column>
+                    <p:column headerText="Status">
+                        <p:outputLabel value="#{os.statusToString()}"/>
+                    </p:column>
+                    <p:column headerText="Opções">
+                        <p:commandButton id="butVer"   update=":form:verOrcamento" oncomplete="PF('verOrcDialog').show()" icon="ui-icon-document" title="Ver">
+                            <f:setPropertyActionListener  target="#{controllerOs.os}" value="#{os}" />
+                        </p:commandButton>
+
+                        <p:commandButton id="butCri" update=":form:orcamento" oncomplete="PF('orcDialog').show()" icon="ui-icon-wrench" title="Orçamento">
+                            <f:setPropertyActionListener  target="#{controllerOs.os}" value="#{os}" />
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
+
+                <p:dialog header="Orçamento" widgetVar="orcDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" >
+
+                    <p:outputPanel id="orcamento" style="text-align:center;" rendered="#{controllerOs.os != null}">
+                        <ui:include src="/WEB-INF/templates/paginas/orcamento.xhtml"/>
+                    </p:outputPanel>
+
+                </p:dialog>
+                <p:dialog header="Orçamento" widgetVar="verOrcDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+
+                    <p:outputPanel id="verOrcamento" style="text-align:center;">
+                        <ui:include src="/WEB-INF/templates/paginas/verOrcamento.xhtml"/>
+                    </p:outputPanel>
+
+                </p:dialog>
+
+
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>
+

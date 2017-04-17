@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition template="/WEB-INF/templates/templateLogado.xhtml">
+        <ui:define name="titulo">Cadastrar Cliente</ui:define>
+        <c:if test="#{!controllerUsuario.permissaoAcesso(1)}">
+            #{facesContext.externalContext.redirect("/index.xhtml")}
+        </c:if>
+        <ui:define name="corpo">
+            <h:form id="form">
+
+                <p:dataTable value="#{controllerCliente.listarTudo()}" var="cli" >
+                    <f:facet name="header">
+                        Lista de Clientes
+                    </f:facet>
+                    <p:column headerText="CPF" filterBy="#{cli.cpf}" filterMatchMode="startsWith">
+                        <h:outputText value="#{cli.cpf}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome" filterBy="#{cli.nome}" filterMatchMode="contains">
+                        <h:outputText value="#{cli.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="Nivel" sortBy="#{cli.nivel}">
+                        <h:outputText value="#{cli.nivelToString()}"/>
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton update=":form:verCli" oncomplete="PF('verCliDialog').show()" icon="ui-icon-search" title="Ver">
+                            <f:setPropertyActionListener value="#{cli}" target="#{controllerUsuario.selecionado}" />
+                        </p:commandButton>
+                        <p:commandButton update=":form:altCli" oncomplete="PF('altCliDialog').show()" icon="ui-icon-pencil" title="Alterar">
+                            <f:setPropertyActionListener value="#{cli}" target="#{controllerUsuario.selecionado}" />
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:dialog header="Detalhes" widgetVar="verCliDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="verCli" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty controllerUsuario.selecionado}" columnClasses="cpf,nome">
+
+                            <h:outputText value="CPF:" />
+                            <h:outputText value="#{controllerUsuario.selecionado.cpf}" />
+
+                            <h:outputText value="Nome:" />
+                            <h:outputText value="#{controllerUsuario.selecionado.nome}" />
+
+                            
+
+                            <h:outputText value="Nivel de acesso:" />
+                            <h:outputText value="#{controllerUsuario.selecionado.nivelToString()}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+                <p:dialog header="Alterar" widgetVar="altCliDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" onHide="#{controllerUsuario.selecionado == null}">
+                    <p:outputPanel id="altCli" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty controllerUsuario.selecionado}" columnClasses="cpf,nome">
+
+                            <h:outputText value="CPF:" />
+                            <h:inputText value="#{controllerUsuario.selecionado.cpf}" />
+
+                            <h:outputText value="Nome:" />
+                            <h:inputText value="#{controllerUsuario.selecionado.nome}" />
+
+
+                            <h:outputText value="Nivel de acesso:" />
+                            <p:selectOneMenu value="#{controllerUsuario.selecionado.nivel}">
+                                <f:selectItems value="#{controllerUsuario.listarNiveis(usuarioLogado)}" var="niv" itemLabel="#{niv.nome}" itemValue="#{niv.nivel}"/>
+                            </p:selectOneMenu>
+                            <p:commandButton action="#{controllerUsuario.atualizarUsuario()}" update=":form" oncomplete="PF('altCliDialog').hide()" value="Atualizar"/>
+                            <p:growl showDetail="true"/>
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

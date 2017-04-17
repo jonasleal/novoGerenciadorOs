@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <p:panelGrid>
+        <p:row>
+            <p:column>
+                <h:outputText value="Nº da O.S.:"/>
+            </p:column>
+            <p:column>
+                <h:outputText value="#{controllerOs.os.numero}"/>
+            </p:column>
+            <p:column>
+                <h:outputText value="Nº de serie:"/>
+            </p:column>
+            <p:column>
+                <h:outputText value="#{controllerOs.os.equipamento.numeroSerie}"/>
+            </p:column>
+        </p:row>
+        <p:row>
+            <p:column>
+                <h:outputText value="Marca"/>
+            </p:column>
+            <p:column>
+                <h:outputText value="#{controllerOs.os.equipamento.modelo.marca.nome}"/>
+            </p:column>
+            <p:column>
+                <h:outputText value="Modelo"/>
+            </p:column>
+            <p:column>
+                <h:outputText value="#{controllerOs.os.equipamento.modelo.nome}"/>
+            </p:column>
+        </p:row>
+
+        <p:row>
+
+            <p:column colspan="4">
+                <c:choose>
+                    <c:when test="#{controllerOs.os.orcamento == null}">
+                        <p:inputTextarea value="#{controllerOs.orc.texto}"/>
+                    </c:when>
+                    <c:when test="#{controllerOs.os.orcamento.aprovado}">
+                        <h:outputText value="#{controllerOs.os.orcamento.texto}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <p:inputTextarea value="#{controllerOs.os.orcamento.texto}"/>
+                    </c:otherwise>
+                </c:choose>
+
+            </p:column>
+        </p:row>
+        <p:row>
+
+            <p:column colspan="4">
+                <c:if test="#{controllerOs.os.orcamento.aprovado}">
+
+                    <p:outputLabel for="status" value="Status" />
+                    <p:selectOneRadio id="status" value="#{controllerOs.os.status}">
+                        <f:selectItem itemLabel="Eperando peça" itemValue="4" />
+                        <f:selectItem itemLabel="Em teste" itemValue="5" />
+                        <f:selectItem itemLabel="Pronto" itemValue="6" />
+                    </p:selectOneRadio>
+
+                </c:if>
+
+
+            </p:column>
+        </p:row>
+
+        <p:row>
+            <p:column colspan="4">
+                <c:choose>
+                    <c:when test="#{controllerOs.os.orcamento == null}">
+                        <p:commandButton action="#{controllerOs.addOrcamento()}" update=":form" oncomplete="PF('orcDialog').hide()" value="Pronto"/>
+                    </c:when>
+                    <c:otherwise>
+                        <p:commandButton action="#{controllerOs.atualizar()}" update=":form" oncomplete="PF('orcDialog').hide()" value="Salvar"/>
+                    </c:otherwise>
+                </c:choose>
+            </p:column>
+        </p:row>
+
+    </p:panelGrid>
+</html>
+

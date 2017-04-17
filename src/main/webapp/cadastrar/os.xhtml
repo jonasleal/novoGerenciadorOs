@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition template="/WEB-INF/templates/templateLogado.xhtml">
+        <ui:define name="titulo">Cadastrar Equipamento</ui:define>
+        <ui:define name="corpo">
+            <c:if test="#{!controllerUsuario.permissaoAcesso(1)}">
+                #{facesContext.externalContext.redirect("/index.xhtml")}
+            </c:if>
+
+            <h:form id="form">
+                <p:growl id="msgs" showDetail="true"/>
+                <p:wizard flowListener="#{controllerOs.onFlowProcess}" backLabel="Voltar" nextLabel="Proximo">
+                    <p:tab id="cliente" title="Cliente.">
+                        <p:dataTable value="#{controllerCliente.listarTudo()}" var="cli" selectionMode="single" selection="#{controllerOs.clienteSelec}" rowKey="#{cli.cpf}" >
+                            <f:facet name="header">
+                                Lista de Clientes
+                            </f:facet>
+                            <p:column headerText="CPF" filterBy="#{cli.cpf}" filterMatchMode="startsWith">
+                                <h:outputText value="#{cli.cpf}"/>
+                            </p:column>
+
+                            <p:column headerText="Nome" filterBy="#{cli.nome}" filterMatchMode="contains">
+                                <h:outputText value="#{cli.nome}"/>
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </p:tab>
+                    <p:tab id="equipamento" title="Equipamento">
+                        <p:dataTable value="#{controllerEquipamento.listarPor(controllerOs.clienteSelec)}" var="equi" selectionMode="single" selection="#{controllerOs.os.equipamento}" rowKey="#{equi.id}" >
+                            <f:facet name="header">
+                                Lista de Clientes
+                            </f:facet>
+                            <p:column headerText="Nº de serie" filterBy="#{equi.numeroSerie}" filterMatchMode="startsWith">
+                                <h:outputText value="#{equi.numeroSerie}"/>
+                            </p:column>
+
+                            <p:column headerText="Marca" filterBy="#{equi.modelo.marca.nome}" filterMatchMode="contains">
+                                <h:outputText value="#{equi.modelo.marca.nome}"/>
+                            </p:column>
+                            <p:column headerText="Modelo" filterBy="#{equi.modelo.nome}" filterMatchMode="contains">
+                                <h:outputText value="#{equi.modelo.nome}"/>
+                            </p:column>
+
+
+                        </p:dataTable>
+
+                    </p:tab>
+                    <p:tab id="descricao" title="Descrição">
+                        <p:fieldset legend="Descrição da reclamação">
+                            <p:inputTextarea value="#{controllerOs.os.descricao}"/>
+                        </p:fieldset>
+                    </p:tab>
+                    <p:tab id="final" title="Confirmar">
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column>
+                                    <h:outputText value="Nº da O.S.:"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{controllerOs.os.numero}"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="Nº de serie:"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{controllerOs.os.equipamento.numeroSerie}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputText value="Marca"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{controllerOs.os.equipamento.modelo.marca.nome}"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="Modelo"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{controllerOs.os.equipamento.modelo.nome}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="4">
+                                    <h:outputText value="Observações"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="4">
+                                    <h:outputText value="#{controllerOs.os.orcamento.texto}"/>
+                                </p:column>
+                            </p:row>
+
+
+                        </p:panelGrid>
+                        <p:commandButton action="#{controllerOs.cadastrar()}" value="Cadastrar" update=":form"/>
+                    </p:tab>
+                </p:wizard>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

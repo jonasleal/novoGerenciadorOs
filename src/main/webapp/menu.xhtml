@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:body>
+        <c:if test="#{usuarioLogado.nivel == 0}">
+
+        </c:if>
+
+
+        <c:if test="#{usuarioLogado.nivel > 0}">
+            <h:link outcome="cadastrarPessoa.xhtml" value="Cadastrar Pessoa"/><br/>
+        </c:if>
+        <c:if test="#{usuarioLogado.nivel > 0}">
+            <h:link outcome="cadastrarCliente.xhtml" value="Cadastrar Cliente"/><br/>
+        </c:if>
+        <c:if test="#{usuarioLogado.nivel > 0}">
+            <h:link outcome="cadastrarMarca.xhtml" value="Cadastrar Marca"/><br/>
+        </c:if>
+        <c:if test="#{usuarioLogado.nivel > 0}">
+            <h:link outcome="cadastrarModelo.xhtml" value="Cadastrar Modelo"/><br/>
+        </c:if>
+        <c:if test="#{usuarioLogado.nivel > 0}">
+            <h:link outcome="cadastrarEquipamento.xhtml" value="Cadastrar Equipamento"/><br/>
+        </c:if>
+    </h:body>
+</html>
+

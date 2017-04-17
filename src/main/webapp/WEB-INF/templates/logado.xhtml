@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:layout id="layout" fullPage="true">
+            <p:layoutUnit position="north">
+                <h1><h:outputText value="Gerenciador de O.S." /></h1>
+            </p:layoutUnit>
+            <p:layoutUnit position="west" size="150">
+                <c:if test="#{usuarioLogado.nivel > 0}">
+                    <h:link outcome="cadastrarCliente.xhtml" value="Cadastrar Marca"/>
+                </c:if>
+                <c:if test="#{usuarioLogado.nivel > 0}">
+                    <h:link rel="cadastrarMarca.xhtml" value="Cadastrar Marca"/>
+                </c:if>
+                <c:if test="#{usuarioLogado.nivel > 0}">
+                    <h:link rel="cadastrarModelo.xhtml" value="Cadastrar Modelo"/>
+                </c:if>
+                <c:if test="#{usuarioLogado.nivel > 0}">
+                    <h:link rel="cadastrarEquipamento.xhtml" value="Cadastrar Equipamento"/>
+                </c:if>
+            </p:layoutUnit>
+            <p:layoutUnit id="center" position="center">
+                
+                
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+
